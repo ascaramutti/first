@@ -1,5 +1,6 @@
 package com.exam.first.service.impl;
 
+import com.exam.first.dto.ProductCreateDto;
 import com.exam.first.dto.ProductDto;
 import com.exam.first.exception.ProductNotFoundException;
 import com.exam.first.repository.ProductRepository;
@@ -36,5 +37,15 @@ public class ProductServiceImpl implements ProductService {
                         .map(product -> Mono.just(productServiceMapper.toProductDto(product)))
                         .orElseThrow(() -> new ProductNotFoundException(id)))
                 .doOnTerminate(() -> log.info(">>> findById end"));
+    }
+
+    @Override
+    public Mono<ProductDto> createProduct(ProductCreateDto productCreateDto) {
+        log.info(">>> createProduct start");
+        return Mono.just(productCreateDto)
+                .map(productServiceMapper::toProduct)
+                .map(productRepository::save)
+                .map(productServiceMapper::toProductDtoWithUpperCaseName)
+                .doOnTerminate(() -> log.info(">>> createProduct end"));
     }
 }

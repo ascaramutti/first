@@ -1,15 +1,14 @@
 package com.exam.first.controller;
 
+import com.exam.first.dto.ProductCreateDto;
 import com.exam.first.dto.ProductDto;
 import com.exam.first.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -39,7 +38,7 @@ public class ProductController {
                 .doOnTerminate(() -> log.info(">>> filterProducts end"));
     }
 
-    @GetMapping("/findById/{id}")
+    @GetMapping("/{id}")
     public Mono<ResponseEntity<ProductDto>> findProductById(
             @PathVariable("id") Long id) {
 
@@ -50,6 +49,18 @@ public class ProductController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(product))
                 .doOnTerminate(() -> log.info(">>> findProductById end"));
+    }
+
+    @PostMapping
+    public Mono<ResponseEntity<ProductDto>> newProduct(
+            @Valid @RequestBody ProductCreateDto productCreateDto) {
+        log.info(">>> newProduct start");
+
+        return productService.createProduct(productCreateDto)
+                .map(product -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(product))
+                .doOnTerminate(() -> log.info(">>> newProduct end"));
     }
 
 }
