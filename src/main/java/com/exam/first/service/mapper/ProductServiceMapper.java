@@ -14,4 +14,9 @@ public interface ProductServiceMapper {
     @Mapping(target = "productPrice", source = "price")
     ProductDto toProductDtoWithUpperCaseName (Product product);
 
+    @Mapping(target = "productId", source = "id")
+    @Mapping(target = "productName", source = "name")
+    @Mapping(target = "productPrice", source = "price")
+    ProductDto toProductDto (Product product);
+
 }

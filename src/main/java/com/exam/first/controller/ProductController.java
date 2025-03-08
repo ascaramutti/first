@@ -39,4 +39,17 @@ public class ProductController {
                 .doOnTerminate(() -> log.info(">>> filterProducts end"));
     }
 
+    @GetMapping("/findById/{id}")
+    public Mono<ResponseEntity<ProductDto>> findProductById(
+            @PathVariable("id") Long id) {
+
+        log.info(">>> findProductById start");
+
+        return productService.findById(id)
+                .map(product -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(product))
+                .doOnTerminate(() -> log.info(">>> findProductById end"));
+    }
+
 }
